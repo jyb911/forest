@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 import numpy as np
 import sklearn
-
+from fire_boundary import pointsample
 
 class CenterPointFromListOfCoordinates:
     def center_geolocation(self, geolocations):
@@ -65,7 +65,7 @@ def millerToLonLat(x,y):
     :param y: y轴
     :return:
     """
-    lonlat_coordinate = []
+    # lonlat_coordinate = []
     L = 6381372 * math.pi*2
     W = L
     H = L/2
@@ -73,7 +73,7 @@ def millerToLonLat(x,y):
     lat = ((H/2-y)*2*mill)/(1.25*H)
     lat = ((math.atan(math.exp(lat))-0.25*math.pi)*180)/(0.4*math.pi)
     lon = (x-W/2)*360/W
-    lonlat_coordinate.append((round(lon,7),round(lat,7)))
+    lonlat_coordinate = [round(lon,7),round(lat,7)]
     return lonlat_coordinate
 
 
@@ -177,12 +177,17 @@ def centerobj(f):
     # plt.scatter(y_pre[1], y_pre_1[1],color='r',label='fire',linewidth =0.5)
     # plt.scatter(y_pre[2], y_pre_1[2],color='y',label='fire',linewidth =0.5)
     # plt.show()
-
+    F_coordinate_15min = []
     f_coordinate_15min = []
     f_coordinate_20min = []
     f_coordinate_30min = []
     for index in range(len(y_pre[0])):
         f_coordinate_15min.append(millerToLonLat(y_pre[0][index], y_pre_1[0][index]))
+    f_coordinate_15min = pointsample(f_coordinate_15min)
+    length = len(f_coordinate_15min)
+    for i in range(0, length):
+        F_coordinate_15min.append(f_coordinate_15min[i][0])
+        F_coordinate_15min.append(f_coordinate_15min[i][1])
     # print("15 min is:", f_coordinate_15min)
 
     for index in range(len(y_pre[1])):
@@ -192,7 +197,7 @@ def centerobj(f):
     for index in range(len(y_pre[2])):
         f_coordinate_30min.append(millerToLonLat(y_pre[2][index], y_pre_1[2][index]))
     # print("30 min is:", f_coordinate_30min)
-    return f_coordinate_15min, f_coordinate_20min, f_coordinate_30min
+    return F_coordinate_15min, f_coordinate_20min, f_coordinate_30min
 
 if __name__ == '__main__':
     centerObj = CenterPointFromListOfCoordinates()
@@ -305,12 +310,17 @@ if __name__ == '__main__':
     # plt.show()
 
     f_coordinate_15min = []
+    F_coordinate_15min = []
     f_coordinate_20min = []
     f_coordinate_30min = []
     for index in range(len(y_pre[0])):
         f_coordinate_15min.append(millerToLonLat(y_pre[0][index],y_pre_1[0][index]))
-    # print("15 min is:", f_coordinate_15min)
-
+    f_coordinate_15min = pointsample(f_coordinate_15min)
+    length = len(f_coordinate_15min)
+    for i in range(0,length):
+        F_coordinate_15min.append(f_coordinate_15min[i][0])
+        F_coordinate_15min.append(f_coordinate_15min[i][1])
+    print(F_coordinate_15min)
     for index in range(len(y_pre[1])):
         f_coordinate_20min.append(millerToLonLat(y_pre[1][index], y_pre_1[1][index]))
     # print("20 min is:", f_coordinate_20min)
